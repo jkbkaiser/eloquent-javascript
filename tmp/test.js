@@ -1,14 +1,26 @@
 function test() {
-  return this.red;
+  return new Promise((resolve) => {
+    for (let i = 100; i < 1000; i += 100) {
+      setTimeout(() => {
+        console.log("computing");
+      }, 100);
+    }
+
+    setTimeout(() => {
+      console.log("timeout completed");
+      resolve(4);
+    }, 1000);
+  });
 }
 
-class Test {
-  constructor(val) {
-    this.red = val;
-  }
+async function testA() {
+  await test().then(console.log);
+  console.log("End of functionA");
 }
 
-Test.prototype.test = test;
+function testB() {
+  testA();
+  console.log("End of functionB");
+}
 
-let a = new Test("a");
-console.log(a.test());
+testB();
