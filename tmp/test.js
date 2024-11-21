@@ -1,26 +1,9 @@
-function test() {
-  return new Promise((resolve) => {
-    for (let i = 100; i < 1000; i += 100) {
-      setTimeout(() => {
-        console.log("computing");
-      }, 100);
-    }
+let a = {
+  b: "test",
+};
 
-    setTimeout(() => {
-      console.log("timeout completed");
-      resolve(4);
-    }, 1000);
-  });
-}
+let c = Object.create(a);
 
-async function testA() {
-  await test().then(console.log);
-  console.log("End of functionA");
-}
+console.log(a);
 
-function testB() {
-  testA();
-  console.log("End of functionB");
-}
-
-testB();
+console.log(c.b);
