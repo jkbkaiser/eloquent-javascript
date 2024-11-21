@@ -1,0 +1,42 @@
+<!doctype html>
+
+<tab-panel>
+  <div data-tabname="one">Tab one</div>
+  <div data-tabname="two">Tab two</div>
+  <div data-tabname="three">Tab three</div>
+</tab-panel>
+<script>
+  function asTabs(node) {
+    // Your code here.
+    let buttons = [];
+    let children = [];
+    let selected = 0;
+
+    function updateTab(n) {
+      children[selected].style.display = "none";
+      children[n].style.display = "block";
+      buttons[selected].style.background = "white";
+      buttons[n].style.background = "red";
+      selected = n;
+    }
+
+    Array.from(node.children).forEach((child, idx) => {
+      child.style.display = "none";
+      children.push(child);
+
+      let button = document.createElement("button");
+      button.appendChild(
+        document.createTextNode(child.getAttribute("data-tabname")),
+      );
+      button.onclick = () => {
+        updateTab(idx);
+      };
+
+      buttons.push(button);
+      node.insertBefore(button, node.children[idx]);
+    });
+
+    updateTab(0);
+  }
+  asTabs(document.querySelector("tab-panel"));
+</script>

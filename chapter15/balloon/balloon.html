@@ -1,0 +1,30 @@
+<!doctype html>
+
+<p>🎈</p>
+
+<script>
+  // Your code here
+  let [element] = document.getElementsByTagName("p");
+  let size = 16;
+  element.style.fontSize = `${size}px`;
+
+  function handler(event) {
+    if (event.key == "ArrowUp") {
+      size = Math.floor(size * 1.1);
+      element.style.fontSize = `${size}px`;
+    } else if (event.key == "ArrowDown") {
+      size = Math.floor(size * 0.9);
+      element.style.fontSize = `${size}px`;
+    }
+
+    if (size > 100) {
+      element.replaceChild(
+        document.createTextNode("💥"),
+        element.childNodes[0],
+      );
+      window.removeEventListener("keydown", handler);
+    }
+  }
+
+  let listener = window.addEventListener("keydown", handler);
+</script>

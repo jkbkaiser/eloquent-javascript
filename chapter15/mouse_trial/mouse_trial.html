@@ -1,0 +1,45 @@
+<!doctype html>
+
+<style>
+  .trail {
+    /* className for the trail elements */
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    border-radius: 3px;
+    background: teal;
+  }
+  body {
+    height: 300px;
+  }
+</style>
+
+<script>
+  const maxElements = 10;
+  let elements = [];
+
+  function createElement(x, y) {
+    let trail = document.createElement("div");
+    trail.className = "trail";
+    trail.style.left = x + "px";
+    trail.style.top = y + "px";
+    elements.push(trail);
+    document.body.appendChild(trail);
+  }
+
+  // Your code here.
+  window.addEventListener("mousemove", (event) => {
+    createElement(event.clientX, event.clientY);
+    console.log(elements.length);
+
+    if (elements.length > maxElements) {
+      elements[0].remove();
+      elements = elements.slice(1);
+      console.log("removing");
+    }
+  });
+</script>
+
+<body>
+  <h1>Test</h1>
+</body>
