@@ -1,0 +1,14 @@
+<!doctype html>
+<canvas width="600" height="200"></canvas>
+<script>
+  let cx = document.querySelector("canvas").getContext("2d");
+
+  // Your code here.
+  let x = 50;
+  let y = 10;
+  cx.fillStyle = "red";
+  cx.translate(x, y);
+  cx.rotate((45 * Math.PI) / 180);
+  cx.translate(-x, -y);
+  cx.fillRect(x, y, 50, 50);
+</script>

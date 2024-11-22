@@ -1,0 +1,45 @@
+<!doctype html>
+<canvas width="600" height="200"></canvas>
+<script>
+  let cx = document.querySelector("canvas").getContext("2d");
+
+  // Your code here.
+  cx.beginPath();
+
+  let numSteps = 100;
+  let offX = 50;
+  let offY = 50;
+  let scale = 40;
+  let step = (2 * Math.PI) / numSteps;
+
+  let PI4 = (1 / 4) * Math.PI;
+
+  function getScale(t) {
+    let rest = t - Math.floor(t / PI4) * PI4;
+    let perc = (rest / PI4) * 100;
+
+    let r = -(perc - 50) * (perc - 50) * 0.06 + 150;
+
+    return r * 0.1;
+  }
+
+  function getCoord(t) {
+    console.log(scale - getScale(t));
+    let x = Math.sin(t) * (scale - getScale(t)) + offX;
+    let y = Math.cos(t) * (scale - getScale(t)) + offY;
+    return [x, y];
+  }
+
+  cx.moveTo(...getCoord(0));
+
+  for (let i = 0; i < numSteps; i += 1) {
+    let t = step * i;
+    let [x, y] = getCoord(t);
+
+    cx.lineTo(x, y);
+    cx.moveTo(x, y);
+  }
+
+  cx.lineWidth = 1;
+  cx.stroke();
+</script>

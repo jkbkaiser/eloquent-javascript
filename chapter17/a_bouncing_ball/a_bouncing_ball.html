@@ -1,0 +1,57 @@
+<canvas width="400" height="400"></canvas>
+<script>
+  let canvas = document.querySelector("canvas");
+  let cx = canvas.getContext("2d");
+
+  let lastTime = null;
+  function frame(time) {
+    if (lastTime != null) {
+      updateAnimation(Math.min(100, time - lastTime) / 1000);
+    }
+    lastTime = time;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  function drawCircle(x, y) {
+    cx.beginPath();
+    cx.arc(x, y, radius, 0, 2 * Math.PI, false);
+    cx.fillStyle = "red";
+    cx.fill();
+  }
+
+  function drawEdges() {
+    cx.strokeStyle = "black";
+    cx.stroke = 1;
+    cx.strokeRect(1, 1, 398, 398);
+  }
+
+  let radius = 10;
+  let x = 50;
+  let y = 50;
+
+  let speedX = 2;
+  let speedY = 1.4;
+
+  let frameCount = 0;
+
+  function updateAnimation(step) {
+    cx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawCircle(x, y);
+    drawEdges();
+
+    if (y - radius < 0 || 400 < y + radius) {
+      speedY *= -1.1;
+    }
+
+    if (x - radius < 0 || 400 < x + radius) {
+      speedX *= -1.1;
+    }
+
+    x = x + speedX;
+    y = y + speedY;
+
+    frameCount += 1;
+  }
+</script>
