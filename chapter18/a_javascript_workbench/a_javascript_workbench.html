@@ -1,0 +1,21 @@
+<!doctype html>
+
+<textarea id="code">return "hi";</textarea>
+<button id="button">Run</button>
+<pre id="output"></pre>
+
+<script>
+  // Your code here.
+  function executeCode(code) {
+    return Function(code)();
+  }
+
+  let button = document.getElementById("button");
+  let inputElement = document.getElementById("code");
+  let outputElement = document.getElementById("output");
+
+  button.addEventListener("click", function () {
+    let result = executeCode(inputElement.value);
+    output.innerText = String(result);
+  });
+</script>

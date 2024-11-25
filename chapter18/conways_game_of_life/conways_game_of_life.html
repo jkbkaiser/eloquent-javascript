@@ -1,0 +1,123 @@
+<!doctype html>
+
+<div id="grid"></div>
+<button id="next">Next generation</button>
+
+<script>
+  const height = 20;
+  const width = 20;
+  const spawnProb = 0.5;
+  const gridElement = document.getElementById("grid");
+
+  function setupGrid() {
+    let grid = [];
+
+    for (let i = 0; i < height; i++) {
+      const row = [];
+
+      for (let j = 0; j < width; j++) {
+        if (Math.random() < spawnProb) {
+          row.push(1);
+        } else {
+          row.push(0);
+        }
+      }
+
+      grid.push(row);
+    }
+
+    return grid;
+  }
+
+  function gridToHTML(grid) {
+    const root = document.createElement("div");
+
+    for (let i = 0; i < height; i++) {
+      const row = document.createElement("div");
+
+      for (let j = 0; j < width; j++) {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `${i * width + j}`;
+        checkbox.checked = grid[i][j] == 1;
+        row.appendChild(checkbox);
+      }
+
+      root.appendChild(row);
+    }
+
+    return root;
+  }
+
+  function readGrid() {
+    const rootElement = gridElement.firstChild;
+    return Array.from(rootElement.children).map((child) => {
+      return Array.from(child.children).map((cell) => {
+        return cell.checked ? 1 : 0;
+      });
+    });
+  }
+
+  function getNeighbors(grid, i, j) {
+    let neighbors = [];
+    for (let k of [i == 0 ? height - 1 : -1, 0, 1]) {
+      for (let l of [j == 0 ? width - 1 : -1, 0, 1]) {
+        if (!(k == 0 && l == 0)) {
+          neighbors.push(grid[(i + k) % height][(j + l) % width]);
+        }
+      }
+    }
+    return neighbors;
+  }
+
+  function sum(elements) {
+    return elements.reduce((a, b) => a + b);
+  }
+
+  function next(grid) {
+    let newGrid = [];
+
+    for (let i = 0; i < height; i++) {
+      let row = [];
+
+      for (let j = 0; j < width; j++) {
+        let isAlive = grid[i][j] == 1;
+        let numNeighbors = sum(getNeighbors(grid, i, j));
+
+        if (isAlive) {
+          if (numNeighbors == 2 || numNeighbors == 3) {
+            row.push(1);
+          } else {
+            row.push(0);
+          }
+        } else {
+          if (numNeighbors == 3) {
+            row.push(1);
+          } else {
+            row.push(0);
+          }
+        }
+      }
+
+      newGrid.push(row);
+    }
+
+    return newGrid;
+  }
+
+  let grid = setupGrid();
+  let html = gridToHTML(grid);
+  gridElement.appendChild(html);
+
+  const button = document.getElementById("next");
+  button.addEventListener("click", function () {
+    grid = readGrid(gridElement);
+
+    let newGrid = next(grid);
+    let newHtml = gridToHTML(newGrid);
+
+    gridElement.replaceChild(newHtml, html);
+
+    html = newHtml;
+  });
+</script>
