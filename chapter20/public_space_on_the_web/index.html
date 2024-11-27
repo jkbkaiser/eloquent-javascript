@@ -1,0 +1,107 @@
+<!doctype html>
+<!-- <script src="./circles.js"></script> -->
+
+<div>
+  <h1>Public space on the web</h1>
+  <form>
+    <div>current path:</div>
+    <div id="current-path">""</div>
+    <div>DIR</div>
+    <div id="dir" style="display: flex; flex-direction: column"></div>
+    <textarea id="editor"></textarea>
+    <button type="submit">Write</button>
+  </form>
+</div>
+<script>
+  let currentPath = "";
+  let selectedFile = "example.html";
+
+  const pathElement = document.getElementById("current-path");
+  const dirElement = document.getElementById("dir");
+  const editorElement = document.getElementById("editor");
+  const formElement = document.querySelector("form");
+
+  function updatePathElement() {
+    pathElement.innerText = currentPath;
+  }
+  updatePathElement();
+
+  function getOptions() {
+    return fetch(`http://localhost:8000/${currentPath}`).then((resp) =>
+      resp.text(),
+    );
+  }
+
+  function updateDir() {
+    getOptions().then((text) => {
+      let elements = text.split("\n");
+
+      let button = document.createElement("button");
+      button.innerText = "..";
+      button.style.width = "fit-content";
+
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        let t = currentPath.split("/").filter((a) => a != "");
+
+        if (t.length >= 1) {
+          currentPath = t.slice(0, t.length - 1).join("/");
+          updatePathElement();
+          dirElement.innerHTML = "";
+          updateDir();
+        }
+      });
+
+      dirElement.appendChild(button);
+
+      for (let element of elements) {
+        let button = document.createElement("button");
+        button.innerText = element;
+        button.style.width = "fit-content";
+
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+
+          if (!element.includes(".")) {
+            currentPath += `${element}/`;
+            updatePathElement();
+            dirElement.innerHTML = "";
+            updateDir();
+          } else {
+            selectedFile = `${currentPath}${element}`;
+            updateForm();
+          }
+        });
+
+        dirElement.appendChild(button);
+      }
+    });
+  }
+  updateDir();
+
+  function updateForm() {
+    fetch(`http://localhost:8000/${selectedFile}`)
+      .then((resp) => resp.text())
+      .then((text) => {
+        editorElement.value = text;
+      });
+  }
+  updateForm();
+
+  function writeDocument() {
+    fetch(`http://localhost:8000/${selectedFile}`, {
+      method: "PUT",
+      body: editorElement.value,
+    }).then((resp) => {
+      if (resp.status != 204) {
+        console.log("Something went wrong", resp.status);
+      }
+    });
+  }
+
+  formElement.addEventListener("submit", (event) => {
+    event.preventDefault();
+    writeDocument();
+  });
+</script>
